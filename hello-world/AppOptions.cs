@@ -13,13 +13,13 @@ public record AppOptions
         public string? AppSecret { get; init; }
     }
 
-    public class UriOptions
+    public class LoginOptions
     {
-        public Uri? OAuth { get; init; }
+        public Uri? Authority { get; init; }
 
-        public Uri? Resources { get; init; }
+        public ICollection<string> Scopes { get; init; } = [];
     }
 
     public IdentityOptions? Identity { get; init; }
-    public UriOptions? Uris { get; init; }
+    public LoginOptions? Login { get; init; }
 }

@@ -8,10 +8,10 @@
 #
 
 [App.Identity]
-TenantId = "00000000-0000-0000-0000-000000000000" # Paste your own tenant ID here
-AppId = "00000000-0000-0000-0000-000000000000" # Paste your own app ID here
-AppSecret = "" # Paste your own app keys here
+TenantId = "00000000-0000-0000-0000-000000000000" # Directory (tenant) ID
+AppId = "00000000-0000-0000-0000-000000000000" # Application (client) ID
+AppSecret = "" # Client secret value
 
-[App.Uris]
-OAuth = "https://login.windows.net/$TenantId/oauth2/token"
-Resources = 'https://api.securitycenter.windows.com'
+[App.Login]
+Authority = "https://login.microsoftonline.com/"
+Scopes = [ "https://api.securitycenter.microsoft.com/.default" ]
