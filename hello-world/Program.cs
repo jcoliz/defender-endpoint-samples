@@ -48,11 +48,11 @@ try
     Console.WriteLine("TOKEN: {0}", JsonSerializer.Serialize(jwtToken.Payload, jsonoptions));
 
     //
-    // Retrieve connected machines
+    // Retrieve recently-reported machines
     //
 
     var client = new ApiClient(options.Resources!.BaseUri!, jwtToken.RawData);
-    var machines = await client.GetMachinesAsync();
+    var machines = await client.GetRecentMachinesAsync();
 
     //
     // Dump the response for viewing
@@ -67,13 +67,13 @@ try
     // Retrieve top recommendations by severity
     //
 
-    var vulnerabilities = await client.GetVulnerabilitiesAsync();
+    var recommendations = await client.GetRecommendationsAsync();
 
     //
     // Dump the response for viewing
     //
 
-    using (var jDoc = JsonDocument.Parse(vulnerabilities))
+    using (var jDoc = JsonDocument.Parse(recommendations))
     {
         Console.WriteLine("RECOMMENDATIONS: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
     }

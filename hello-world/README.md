@@ -2,8 +2,8 @@
 
 This sample connects to the Defender for Endpoint APIs, then makes a couple basic requests
 
-* Gets recently connected devices
-* Gets top vulnerabilies
+* Gets recently reported machines
+* Gets most critical security recommendations
 
 ## Getting Started
 
@@ -11,18 +11,18 @@ Step one is to ensure you have an Entra ID app registration, and the necessary d
 
 Ensure your app registration has permission to the following `WindowsDefenderATP` APIs:
 
-* SecurityRecommendation.Read.All
-* Machine.Read.All
+* `SecurityRecommendation.Read.All`
+* `Machine.Read.All`
 
 ## Running the Sample
 
 From a developer command prompt, simply run
 
 ```powershell
-PS> dotnet rum
+PS> dotnet run
 ```
 
-If all is working will, it will display the following information:
+If all is working well, you will see the following information:
 
 ### Configuration
 

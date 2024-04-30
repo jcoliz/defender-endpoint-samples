@@ -15,19 +15,19 @@ public class ApiClient(Uri baseUri, string token)
     private HttpClient client = new();
 
     /// <summary>
-    /// Retrieve known machines
+    /// Retrieve most recently-reported machines
     /// </summary>
     /// <returns>List of machines in JSON</returns>
-    public Task<string> GetMachinesAsync()
+    public Task<string> GetRecentMachinesAsync()
     {
-        return GetAsync("machines");
+        return GetAsync("machines?$top=10&$orderby=lastSeen desc");
     }
 
     /// <summary>
     /// Retreive top known vulnerabilities across all machines
     /// </summary>
     /// <returns></returns>
-    public Task<string> GetVulnerabilitiesAsync()
+    public Task<string> GetRecommendationsAsync()
     {
         return GetAsync("recommendations?$top=10&$orderby=severityScore desc");
     }
