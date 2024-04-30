@@ -54,7 +54,6 @@ try
     var httpClient = new HttpClient();
 
     var request = new HttpRequestMessage(HttpMethod.Get, $"{options.Resources!.BaseUri}machines");
-
     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.RawData);
 
     var response = await httpClient.SendAsync(request);
@@ -63,9 +62,32 @@ try
     // Dump the response for viewing
     //
 
-    var machines = await response.Content.ReadAsStringAsync();
-    using var jDoc = JsonDocument.Parse(machines);
-    Console.WriteLine("MACHINES: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
+    var content = await response.Content.ReadAsStringAsync();
+    using (var jDoc = JsonDocument.Parse(content))
+    {
+        Console.WriteLine("MACHINES: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
+    }
+
+    //
+    // Retrieve recommendation
+    //
+
+    //https://api-us3.securitycenter.microsoft.com/api/recommendations?$top=10&$orderby=severityScore desc
+
+    request = new HttpRequestMessage(HttpMethod.Get, $"{options.Resources!.BaseUri}recommendations?$top=10&$orderby=severityScore desc");
+    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.RawData);
+    response = await httpClient.SendAsync(request);
+
+    //
+    // Dump the response for viewing
+    //
+
+    content = await response.Content.ReadAsStringAsync();
+    using (var jDoc = JsonDocument.Parse(content))
+    {
+        Console.WriteLine("RECOMMENDATIONS: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
+    }
+
 }
 catch (Exception ex)
 {
