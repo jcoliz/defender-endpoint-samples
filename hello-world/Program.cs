@@ -1,7 +1,11 @@
-using System.Text.Json;
+// Copyright (C) 2024 James Coliz, Jr. <jcoliz@outlook.com> All rights reserved
+// Use of this source code is governed by the MIT license (see LICENSE.md)
+
 using HelloWorld.Options;
 using Microsoft.Identity.Client;
-using  System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
+using System.Net.Http.Headers;
 
 try
 {
@@ -42,6 +46,26 @@ try
     //
 
     Console.WriteLine("TOKEN: {0}", JsonSerializer.Serialize(jwtToken.Payload, jsonoptions));
+
+    //
+    // Retrieve connected machines
+    //
+
+    var httpClient = new HttpClient();
+
+    var request = new HttpRequestMessage(HttpMethod.Get, $"{options.Resources!.BaseUri}machines");
+
+    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.RawData);
+
+    var response = await httpClient.SendAsync(request);
+
+    //
+    // Dump the response for viewing
+    //
+
+    var machines = await response.Content.ReadAsStringAsync();
+    using var jDoc = JsonDocument.Parse(machines);
+    Console.WriteLine("MACHINES: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
 }
 catch (Exception ex)
 {
