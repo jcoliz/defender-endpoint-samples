@@ -10,7 +10,7 @@
 [App.Identity]
 TenantId = "00000000-0000-0000-0000-000000000000" # Directory (tenant) ID
 AppId = "00000000-0000-0000-0000-000000000000" # Application (client) ID
-AppSecret = "" # Client secret value
+AppSecret = "--fill me in--" # Client secret value
 
 [App.Login]
 Authority = "https://login.microsoftonline.com/"
