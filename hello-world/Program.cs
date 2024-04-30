@@ -5,7 +5,7 @@ using HelloWorld.Options;
 using Microsoft.Identity.Client;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
-using System.Net.Http.Headers;
+using HellowWorld;
 
 try
 {
@@ -51,39 +51,29 @@ try
     // Retrieve connected machines
     //
 
-    var httpClient = new HttpClient();
-
-    var request = new HttpRequestMessage(HttpMethod.Get, $"{options.Resources!.BaseUri}machines");
-    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.RawData);
-
-    var response = await httpClient.SendAsync(request);
+    var client = new ApiClient(options.Resources!.BaseUri!, jwtToken.RawData);
+    var machines = await client.GetMachinesAsync();
 
     //
     // Dump the response for viewing
     //
 
-    var content = await response.Content.ReadAsStringAsync();
-    using (var jDoc = JsonDocument.Parse(content))
+    using (var jDoc = JsonDocument.Parse(machines))
     {
         Console.WriteLine("MACHINES: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
     }
 
     //
-    // Retrieve recommendation
+    // Retrieve top recommendations by severity
     //
 
-    //https://api-us3.securitycenter.microsoft.com/api/recommendations?$top=10&$orderby=severityScore desc
-
-    request = new HttpRequestMessage(HttpMethod.Get, $"{options.Resources!.BaseUri}recommendations?$top=10&$orderby=severityScore desc");
-    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.RawData);
-    response = await httpClient.SendAsync(request);
+    var vulnerabilities = await client.GetVulnerabilitiesAsync();
 
     //
     // Dump the response for viewing
     //
 
-    content = await response.Content.ReadAsStringAsync();
-    using (var jDoc = JsonDocument.Parse(content))
+    using (var jDoc = JsonDocument.Parse(vulnerabilities))
     {
         Console.WriteLine("RECOMMENDATIONS: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
     }
