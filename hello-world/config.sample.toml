@@ -1,0 +1,17 @@
+#
+# Sample configuration file
+#
+# TODO: Copy this file to `config.toml`, then change these values to match
+# your conficguration.
+#
+# Note that `config.toml` is not included in source control.
+#
+
+[App.Identity]
+TenantId = "00000000-0000-0000-0000-000000000000" # Paste your own tenant ID here
+AppId = "00000000-0000-0000-0000-000000000000" # Paste your own app ID here
+AppSecret = "" # Paste your own app keys here
+
+[App.Uris]
+OAuth = "https://login.windows.net/$TenantId/oauth2/token"
+Resources = 'https://api.securitycenter.windows.com'
