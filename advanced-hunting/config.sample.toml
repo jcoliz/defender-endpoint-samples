@@ -11,7 +11,7 @@
 TenantId = "00000000-0000-0000-0000-000000000000" # Directory (tenant) ID
 AppId = "00000000-0000-0000-0000-000000000000" # Application (client) ID
 AppSecret = "--fill me in--" # Client secret value
+UserId = "--fill me in--" # Existing user to fetch, for testing
 
 [App.Login]
-Authority = "https://login.microsoftonline.com/"
 Scopes = [ "https://api.securitycenter.microsoft.com/.default" ]

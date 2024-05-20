@@ -32,6 +32,11 @@ public record AppOptions
         /// Client secret value
         /// </summary>
         public string? AppSecret { get; init; }
+
+        /// <summary>
+        /// User ID of a sample user to get to validate connection
+        /// </summary>
+        public string? UserId { get; init; }
     }
 
     /// <summary>

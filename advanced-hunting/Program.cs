@@ -1,11 +1,12 @@
 ﻿// Copyright (C) 2024 James Coliz, Jr. <jcoliz@outlook.com> All rights reserved
 // Use of this source code is governed by the MIT license (see LICENSE.md)
 
+using Azure.Identity;
 using HelloWorld.Options;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Graph;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 try
 {
@@ -24,29 +25,39 @@ try
     // Dump the configuration to make sure it's working
     //
 
-    var jsonoptions = new JsonSerializerOptions() { WriteIndented = true };
+    var jsonoptions = new JsonSerializerOptions() 
+    { 
+        WriteIndented = true, 
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault 
+    };
+
     Console.WriteLine("CONFIG: {0}", JsonSerializer.Serialize(options, jsonoptions));
 
     //
-    // Get a token
+    // Setup authentication for Microsoft Graph Service
     //
 
-    var myApp = ConfidentialClientApplicationBuilder
-        .Create(options.Identity!.AppId.ToString())
-        .WithClientSecret(options.Identity!.AppSecret!)
-        .WithAuthority($"{options.Login!.Authority!}{options.Identity.TenantId}")
-        .Build();
+    ClientSecretCredential clientSecretCredential =
+        new ClientSecretCredential
+        (
+            options.Identity!.TenantId.ToString(), 
+            options.Identity.AppId.ToString(),
+            options.Identity.AppSecret
+        ); 
 
-    var authResult = await myApp.AcquireTokenForClient(options.Login!.Scopes).ExecuteAsync();
-
-    var jwtToken = new JwtSecurityToken(authResult.AccessToken);
+    GraphServiceClient graphClient = new GraphServiceClient(clientSecretCredential, options.Login!.Scopes);
 
     //
-    // Dump the token for viewing
+    // Make a test call to retrieve one user's details
     //
 
-    Console.WriteLine("TOKEN: {0}", JsonSerializer.Serialize(jwtToken.Payload, jsonoptions));
+    var user = await graphClient.Users[options.Identity.UserId].GetAsync();
 
+    //
+    // Dump the result
+    //
+
+    Console.WriteLine("USER: {0}", JsonSerializer.Serialize(user!, jsonoptions));
 }
 catch (Exception ex)
 {
