@@ -10,6 +10,15 @@ using YamlDotNet.Serialization.NamingConventions;
 try
 {
     //
+    // Parse command-line arguments
+    //
+
+    if (args.Length != 1)
+    {
+        throw new ArgumentException("Please supply path to a query yaml file as the single argument");
+    }
+
+    //
     // Deserialize the query
     //
 
@@ -17,7 +26,7 @@ try
         .WithNamingConvention(CamelCaseNamingConvention.Instance)
         .Build();
 
-    var reader = File.OpenText("Seen Connected Networks.yaml");
+    var reader = File.OpenText(args[0]);
     var hq = deserializer.Deserialize<HuntingQuery>(reader);
 
     var jsonoptions = new JsonSerializerOptions() 
@@ -71,8 +80,12 @@ try
     //
 
     Console.WriteLine("HUNTING: {0}", JsonSerializer.Serialize(result!, jsonoptions));
+
+    return 0;
 }
 catch (Exception ex)
 {
     Console.WriteLine("ERROR: {0} {1}", ex.GetType().Name, ex.Message);
+
+    return -1;
 }
