@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hello-world", "hello-world\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "advanced-hunting", "advanced-hunting\advanced-hunting.csproj", "{40A64DAA-3772-4D3C-893D-078B909102ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "advanced-hunting-yaml", "advanced-hunting-yaml\advanced-hunting-yaml.csproj", "{22E7590F-3A23-45C4-937E-C64E547B05C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{40A64DAA-3772-4D3C-893D-078B909102ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40A64DAA-3772-4D3C-893D-078B909102ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40A64DAA-3772-4D3C-893D-078B909102ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22E7590F-3A23-45C4-937E-C64E547B05C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22E7590F-3A23-45C4-937E-C64E547B05C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22E7590F-3A23-45C4-937E-C64E547B05C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22E7590F-3A23-45C4-937E-C64E547B05C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
