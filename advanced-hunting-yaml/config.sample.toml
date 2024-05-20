@@ -1,0 +1,17 @@
+#
+# Sample configuration file
+#
+# TODO: Copy this file to `config.toml`, then change these values to match
+# your conficguration.
+#
+# Note that `config.toml` is not included in source control.
+#
+
+[App.Identity]
+TenantId = "00000000-0000-0000-0000-000000000000" # Directory (tenant) ID
+AppId = "00000000-0000-0000-0000-000000000000" # Application (client) ID
+AppSecret = "--fill me in--" # Client secret value
+UserId = "--fill me in--" # Existing user to fetch, for testing
+
+[App.Login]
+Scopes = [ "https://api.securitycenter.microsoft.com/.default" ]
