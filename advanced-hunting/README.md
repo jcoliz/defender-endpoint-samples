@@ -8,4 +8,9 @@ Next up, we will explore some of the community hunting queries for MDE.
 
 The difference from the Hello World sample is that we will be using the Microsoft Graph APIs. The legacy APIs have not been [updated since 2022](https://learn.microsoft.com/en-us/defender-endpoint/api/api-release-notes). All new work is going into the [Microsoft Graph Security API](https://learn.microsoft.com/en-us/defender-endpoint/api/api-release-notes).
 
-This means we'll need to give our app the correct permissions and we'll need a new SDK! We'll be using the [Microsoft Graph .NET Client Library](https://github.com/microsoftgraph/msgraph-sdk-dotnet)
+This means we'll need to give our app the correct permissions and we'll need a new SDK! We'll be using the [Microsoft Graph .NET Client Library](https://github.com/microsoftgraph/msgraph-sdk-dotnet).
+
+For the purpose of this sample, we'll want to ensure our application has the following permissions:
+
+* User.ReadBasic.All
+* ThreatHunting.Read.All
