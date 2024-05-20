@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hello-world", "hello-world\hello-world.csproj", "{192324B5-7896-46D1-A6A6-86C71C03B460}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "advanced-hunting", "advanced-hunting\advanced-hunting.csproj", "{40A64DAA-3772-4D3C-893D-078B909102ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{192324B5-7896-46D1-A6A6-86C71C03B460}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{192324B5-7896-46D1-A6A6-86C71C03B460}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{192324B5-7896-46D1-A6A6-86C71C03B460}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A64DAA-3772-4D3C-893D-078B909102ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A64DAA-3772-4D3C-893D-078B909102ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A64DAA-3772-4D3C-893D-078B909102ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A64DAA-3772-4D3C-893D-078B909102ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
