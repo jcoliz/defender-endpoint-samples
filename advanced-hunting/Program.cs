@@ -58,6 +58,20 @@ try
     //
 
     Console.WriteLine("USER: {0}", JsonSerializer.Serialize(user!, jsonoptions));
+
+    //
+    // Make a hunting query
+    //
+
+    Microsoft.Graph.Security.MicrosoftGraphSecurityRunHuntingQuery.RunHuntingQueryPostRequestBody body = new() { Query = "DeviceInfo | order by Timestamp desc | project Timestamp, DeviceId, ReportId, ExposureLevel | limit 5" };
+    var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(body);
+
+    //
+    // Dump the result
+    //
+
+    Console.WriteLine("HUNTING: {0}", JsonSerializer.Serialize(result!, jsonoptions));
+
 }
 catch (Exception ex)
 {
