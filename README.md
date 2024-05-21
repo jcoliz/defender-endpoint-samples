@@ -8,9 +8,10 @@ This project showcases samples for:
 
 ## What's Here
 
-* [Hello World](./hello-world/): Basic example to ensure your connection works, and you can download some basic information from the service.
+* [Connect to Microsoft Defender for Endpoint APIs](./hello-world/): Basic example to ensure your connection works, and you can download some basic information from the service.
 * [Start Advanced Hunting](./advanced-hunting/): Simple example of running an advanced hunting query against the Security Graph APIs.
 * [Explore Advanced Hunting Queries](./advanced-hunting-yaml/): The Microsoft Defender portal surfaces several community-supplied threat hunting queries. We can use these same queries to hunt using the API!
+* [Stream events through an Event Hub](./event-hub-listener/): Use Event Hub to stream events as they happen.
 
 ## Getting Started
 
@@ -31,7 +32,7 @@ Follow along with the guide at [Create an app to access Microsoft Defender for E
 
 ### Create a `config.toml` file for your configuration
 
-Each sample requires your app registration details in a `config.toml` file. Copy the `config.sample.toml` file from that folder, rename to `config.toml`, and fill out the details:
+Most samples require your app registration details in a `config.toml` file. Copy the `config.sample.toml` file from that folder, rename to `config.toml`, and fill out the details:
 
 ```toml
 [App.Identity]
