@@ -3,21 +3,13 @@
 
 namespace HelloWorld.Options;
 
-/// <summary>
-/// Configuration options for app-wide behavior
-/// </summary>
-public record AppOptions
+public class EventHubOptions
 {
     /// <summary>
     /// Config file section
     /// </summary>
-    public static readonly string Section = "App";
+    public static readonly string Section = "EventHub";
 
-    public class EventHubOptions
-    {
-        public string? ConnectionString { get; init; }
-        public string? HubName { get; init; }
-    }
-
-    public EventHubOptions? EventHub { get; init; }
+    public string? ConnectionString { get; init; }
+    public string? HubName { get; init; }
 }

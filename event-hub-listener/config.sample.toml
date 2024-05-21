@@ -7,6 +7,6 @@
 # Note that `config.toml` is not included in source control.
 #
 
-[App.EventHub]
+[EventHub]
 ConnectionString = "--fill me in--"
 HubName = "ehub"
