@@ -5,6 +5,7 @@ using Azure.Identity;
 using HelloWorld.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
+using Microsoft.Graph.Security.MicrosoftGraphSecurityRunHuntingQuery;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -63,7 +64,10 @@ try
     // Make a hunting query
     //
 
-    Microsoft.Graph.Security.MicrosoftGraphSecurityRunHuntingQuery.RunHuntingQueryPostRequestBody body = new() { Query = "DeviceInfo | order by Timestamp desc | project Timestamp, DeviceId, ReportId, ExposureLevel | limit 5" };
+    var body = new RunHuntingQueryPostRequestBody() 
+    { 
+        Query = "DeviceInfo | order by Timestamp desc | project Timestamp, DeviceId, ReportId, ExposureLevel | limit 5" 
+    };
     var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(body);
 
     //
