@@ -64,7 +64,23 @@ az group delete -y -g $env:RESOURCEGROUP
 
 ## Configure Defender to export events to this namespace
 
-TODO!
+Please have a look at the great video available on the [Streaming API](https://learn.microsoft.com/en-us/defender-xdr/streaming-api) overview page. 
+You can find the Streaming API page in the Defender portal under Settings > Microsoft Defender XDR > Streaming API.
+
+![Streaming API Settings](../docs/images/streaming-api-settings.png)
+
+Press "Add" to add a new streaming export. Choose a catchy name to help you remember, e.g. "Streaming API test". 
+Choose "Forward events to Event Hub." In the "Event Hub Resource ID", you'll enter the ID of the namespace from your deployment
+earlier, e.g. `/subscriptions/{something}/resourceGroups/{your-group}/providers/Microsoft.EventHub/namespaces/ehubns-{unique}`. For Event Hub name,
+refer to the `outputs.hub.value` from the earlier deployment; this is `ehub`, by default.
+
+For testing, go ahead and check all of the various event types. Later on when you've decided which you need, you can always come back here
+to narrow the stream.
+
+![Add Streaming API](../docs/images/add-streaming-api.png)
+
+Then click "Submit," and a few moments later your new Streaming API connection will be listed in the portal, and you're ready to
+watch those events come in.
 
 ## Configure the sample
 
@@ -97,10 +113,35 @@ HubName = "ehub"
 
 ## Run the sample
 
-With evertthing connected, and the `config.toml` set up correctly, you can now run the sample to watch the events flow in. Press Ctrl-C when you're done.
+With everything connected, and the `config.toml` set up correctly, you can now run the sample to watch the events flow in. Press Ctrl-C when you're done.
 
 ```dotnetcli
 dotnet run
+
+info: event_hub_listener.Worker[0]
+      Starting
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: .\defender-endpoint-samples\event-hub-listener
+info: event_hub_listener.Worker[0]
+      Events: {
+        "records": [
+          {
+            "time": "2024-05-21T23:37:19.7996118Z",
+            "tenantId": "6de90c16-b0cb-4759-86b3-5601aec49b50",
+            "operationName": "Publish",
+            "category": "AdvancedHunting-DeviceEvents",
+            "_TimeReceivedBySvc": "2024-05-21T23:33:55.6970602Z",
+          }
+        ]
+      }
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: event_hub_listener.Worker[0]
+      Cancelled
 ```
 
 ## Dig deeper
