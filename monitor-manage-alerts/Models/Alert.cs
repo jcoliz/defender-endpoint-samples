@@ -18,13 +18,16 @@ public record Alert
     /// The ID supplied by the Defender service
     /// </summary>
     public string AlertId { get; init; } = string.Empty;
-    public string? AssignedTo { get; init; }
     public string? Category { get; init; }
     public string? AlertDetermination { get; init; }
     public string Severity { get; init; } = string.Empty;
     public DateTimeOffset? CreatedDateTime { get; init; }
     public List<AlertComment> Comments { get; init; } = [];
     public string Title { get; init; } = string.Empty;
+    public string Status { get; init; } = string.Empty;
+    public string Classification { get; init; } = string.Empty;
+    public string? AssignedTo { get; init; }
+    public string Determination { get; init; } = string.Empty;
 }
 
 /// <summary>
