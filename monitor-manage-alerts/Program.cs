@@ -1,7 +1,19 @@
+using HelloWorld.Options;
 using monitor_manage_alerts;
 
-var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<Worker>();
+var host = Host
+    .CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration(config =>
+    {
+        config.AddTomlFile("config.toml", optional: true, reloadOnChange: true);
+    })
+    .ConfigureServices((context,services) => 
+    {
+        services.AddHostedService<Worker>();
+        services.Configure<IdentityOptions>(
+            context.Configuration.GetSection(IdentityOptions.Section)
+        );
+    })
+    .Build();
 
-var host = builder.Build();
 host.Run();

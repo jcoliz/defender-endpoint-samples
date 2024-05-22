@@ -4,6 +4,15 @@ This sample will demonstrate a ticketing system, which monitors Microsoft Defend
 syncronizes changes back to Defender when they are made locally. This sample runs in a container, and works with a Postgres database
 running in container.
 
+## Initial configuration
+
+Please see the [README](../README.md) at the top if this repository for necessary pre-requisites
+and initial configuration before running the sample.
+
+In particular, this sample requires these API permissions:
+
+* Microsoft Graph: SecurityAlert.Read.All
+
 ## Building the container
 
 From a terminal window in this folder:

@@ -1,23 +1,66 @@
+using Azure.Identity;
+using HelloWorld.Options;
+using Microsoft.Extensions.Options;
+using Microsoft.Graph;
+
 namespace monitor_manage_alerts;
 
-public class Worker : BackgroundService
+public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options) : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
-
-    public Worker(ILogger<Worker> logger)
-    {
-        _logger = logger;
-    }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            if (_logger.IsEnabled(LogLevel.Information))
+            logger.LogInformation("Starting");
+
+            //
+            // Setup authentication for Microsoft Graph Service
+            //
+
+            if (options.Value is null)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                throw new ApplicationException("Please set Identity options in configuration");
             }
-            await Task.Delay(1000, stoppingToken);
+
+            ClientSecretCredential clientSecretCredential =
+                new ClientSecretCredential
+                (
+                    options.Value.TenantId.ToString(), 
+                    options.Value.AppId.ToString(),
+                    options.Value.AppSecret
+                ); 
+
+            GraphServiceClient graphClient = new GraphServiceClient(clientSecretCredential, options.Value.Scopes);
+
+            logger.LogInformation("Client OK");
+
+            //
+            // Continually fetch alerts
+            //
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                var result = await graphClient.Security.Alerts_v2.GetAsync();
+
+                if (result?.Value is null)
+                {
+                    logger.LogWarning("Request failed");
+                }
+                else
+                {
+                    logger.LogInformation("Received {count} alerts", result?.Value?.Count);
+                }
+
+                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            logger.LogInformation("Cancelled");
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex,"Failed");
         }
     }
 }

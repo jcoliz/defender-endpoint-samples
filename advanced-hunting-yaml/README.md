@@ -9,7 +9,7 @@ This sample will load any YAML query definition from that repository, then execu
 
 ## Initial configuration
 
-Please see the [README](../README.md) at the top if this repository for necessary pre-requisites 
+Please see the [README](../README.md) at the top if this repository for necessary pre-requisites
 and initial configuration before running the sample.
 
 In particular, this sample requires these API permissions:
