@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Xml.XPath;
 using AutoMapper;
 using Azure.Identity;
 using HelloWorld.Options;
@@ -90,8 +89,18 @@ public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, I
                     foreach(var alert in alerts)
                     {
                         logger.LogInformation("Alert: {alert}", JsonSerializer.Serialize(alert, _jsonoptions));
+
+                        // TODO: Insert alerts into database here
+                        // AlertFeature.InsertIfNotExists(alert)
+
+                        // TODO: Consider moving graph calls INTO update feature
                     }
                 }
+
+                // TODO: Process update tasks here
+                // var updates = UpdateFeature.NewUpdates();
+                // AlertFeature.SendUpdate(update)
+                // UpdateFeature.MarkAsSet(update)
 
                 await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
