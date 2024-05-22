@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.XPath;
 using AutoMapper;
 using Azure.Identity;
 using HelloWorld.Options;
@@ -10,6 +11,8 @@ namespace monitor_manage_alerts;
 
 public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, IMapper mapper) : BackgroundService
 {
+    private GraphServiceClient? graphClient;
+
     private readonly JsonSerializerOptions _jsonoptions = new() 
     { 
         WriteIndented = true, 
@@ -39,9 +42,30 @@ public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, I
                     options.Value.AppSecret
                 ); 
 
-            GraphServiceClient graphClient = new GraphServiceClient(clientSecretCredential, options.Value.Scopes);
+            graphClient = new GraphServiceClient(clientSecretCredential, options.Value.Scopes);
 
             logger.LogInformation("Client OK");
+
+            await InnerLoop(stoppingToken);
+        }
+        catch (TaskCanceledException)
+        {
+            logger.LogInformation("Cancelled");
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex,"Failed");
+        }
+    }
+
+    private async Task InnerLoop(CancellationToken stoppingToken)
+    {
+        try
+        {
+            if (graphClient is null)
+            {
+                throw new ApplicationException("Client was not initialized");
+            }
 
             //
             // Continually fetch alerts
@@ -74,11 +98,15 @@ public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, I
         }
         catch (TaskCanceledException)
         {
-            logger.LogInformation("Cancelled");
+            throw;
+        }
+        catch (ApplicationException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
-            logger.LogCritical(ex,"Failed");
+            logger.LogError(ex, "Error: {messager}", ex.Message);
         }
     }
 }
