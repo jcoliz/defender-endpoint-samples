@@ -1,3 +1,4 @@
+using System.Reflection;
 using HelloWorld.Options;
 using monitor_manage_alerts;
 
@@ -13,6 +14,7 @@ var host = Host
         services.Configure<IdentityOptions>(
             context.Configuration.GetSection(IdentityOptions.Section)
         );
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
     })
     .Build();
 

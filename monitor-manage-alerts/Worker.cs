@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using AutoMapper;
 using Azure.Identity;
 using HelloWorld.Options;
 using Microsoft.Extensions.Options;
@@ -5,8 +8,14 @@ using Microsoft.Graph;
 
 namespace monitor_manage_alerts;
 
-public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options) : BackgroundService
+public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, IMapper mapper) : BackgroundService
 {
+    private readonly JsonSerializerOptions _jsonoptions = new() 
+    { 
+        WriteIndented = true, 
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault 
+    };
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         try
@@ -48,7 +57,16 @@ public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options) :
                 }
                 else
                 {
-                    logger.LogInformation("Received {count} alerts", result?.Value?.Count);
+                    logger.LogInformation("Received {count} alerts", result.Value.Count);
+
+                    // Map the alerts into local models
+                    var alerts = mapper.Map<List<Alert>>(result.Value);
+
+                    // And dump them, for testing
+                    foreach(var alert in alerts)
+                    {
+                        logger.LogInformation("Alert: {alert}", JsonSerializer.Serialize(alert, _jsonoptions));
+                    }
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
