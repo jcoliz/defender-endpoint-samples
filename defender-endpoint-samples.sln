@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "advanced-hunting-yaml", "ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "event-hub-listener", "event-hub-listener\event-hub-listener.csproj", "{D60F50B1-351D-450B-B04F-3131BE294D42}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "monitor-manage-alerts", "monitor-manage-alerts\monitor-manage-alerts.csproj", "{77E9D4A9-6283-4129-B8BB-7766B3C324DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{D60F50B1-351D-450B-B04F-3131BE294D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D60F50B1-351D-450B-B04F-3131BE294D42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D60F50B1-351D-450B-B04F-3131BE294D42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77E9D4A9-6283-4129-B8BB-7766B3C324DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77E9D4A9-6283-4129-B8BB-7766B3C324DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77E9D4A9-6283-4129-B8BB-7766B3C324DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77E9D4A9-6283-4129-B8BB-7766B3C324DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
