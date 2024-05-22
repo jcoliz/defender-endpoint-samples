@@ -13,6 +13,34 @@ In particular, this sample requires these API permissions:
 
 * Microsoft Graph: SecurityAlert.Read.All
 
+## Running locally
+
+Once you have `config.toml` set up, feel free to run the sample locally in this folder.
+
+```powershell
+dotnet run
+
+info: monitor_manage_alerts.Worker[0]
+      Starting
+info: monitor_manage_alerts.Worker[0]
+      Client OK
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: .\defender-endpoint-samples\monitor-manage-alerts
+info: monitor_manage_alerts.Worker[0]
+      Received 2 alerts
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: monitor_manage_alerts.Worker[0]
+      Cancelled
+```
+
+Right now, the sample connects to the Graph Security APIs, and fetches all the alerts
+every 30 seconds.
+
 ## Building the container
 
 From a terminal window in this folder:
@@ -23,23 +51,24 @@ From a terminal window in this folder:
 
 ## Running the container
 
-Once it's built:
+Once the container is built, and you have `config.toml` set up:
 
 ```powershell
-docker run monitor-manage-alerts:local
+docker compose -f .docker/docker-compose.yaml up
 
-info: monitor_manage_alerts.Worker[0]
-      Worker running at: 05/22/2024 16:17:39 +00:00
-info: Microsoft.Hosting.Lifetime[0]
-      Application started. Press Ctrl+C to shut down.
-info: Microsoft.Hosting.Lifetime[0]
-      Hosting environment: Production
-info: Microsoft.Hosting.Lifetime[0]
-      Content root path: /app
-info: monitor_manage_alerts.Worker[0]
-      Worker running at: 05/22/2024 16:17:40 +00:00
-info: monitor_manage_alerts.Worker[0]
-      Worker running at: 05/22/2024 16:17:41 +00:00
+[+] Running 1/0
+ ✔ Container monitor  Recreated                                                                                    0.1s
+Attaching to monitor
+monitor  | info: monitor_manage_alerts.Worker[0]
+monitor  |       Starting
+monitor  | info: monitor_manage_alerts.Worker[0]
+monitor  |       Client OK
+monitor  | info: Microsoft.Hosting.Lifetime[0]
+monitor  |       Application started. Press Ctrl+C to shut down.
+monitor  | info: Microsoft.Hosting.Lifetime[0]
+monitor  |       Hosting environment: Production
+monitor  | info: Microsoft.Hosting.Lifetime[0]
+monitor  |       Content root path: /app
+monitor  | info: monitor_manage_alerts.Worker[0]
+monitor  |       Received 2 alerts
 ```
-
-It doesn't do much just yet, but we're just getting started!!
