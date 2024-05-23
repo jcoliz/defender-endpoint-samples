@@ -1,7 +1,7 @@
 // Copyright (C) 2024 James Coliz, Jr. <jcoliz@outlook.com> All rights reserved
 // Use of this source code is governed by the MIT license (see LICENSE.md)
 
-namespace HelloWorld.Options;
+namespace MdeSamples.Options;
 
 /// <summary>
 /// Options describing the identity of the app

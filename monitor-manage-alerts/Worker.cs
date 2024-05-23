@@ -2,11 +2,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Azure.Identity;
-using HelloWorld.Options;
+using MdeSamples.Data;
+using MdeSamples.Models;
+using MdeSamples.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 
-namespace monitor_manage_alerts;
+namespace MdeSamples;
 
 public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, IMapper mapper, IAlertStorage alertStorage) : BackgroundService
 {

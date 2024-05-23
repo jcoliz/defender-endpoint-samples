@@ -1,3 +1,5 @@
+namespace MdeSamples.Models;
+
 /// <summary>
 /// A single change we'd like to make to an Alert
 /// </summary>

@@ -1,6 +1,7 @@
 using System.Reflection;
-using HelloWorld.Options;
-using monitor_manage_alerts;
+using MdeSamples;
+using MdeSamples.Data;
+using MdeSamples.Options;
 
 var host = Host
     .CreateDefaultBuilder(args)

@@ -1,3 +1,7 @@
+using MdeSamples.Models;
+
+namespace MdeSamples.Data;
+
 public interface IAlertStorage
 {
     /// <summary>

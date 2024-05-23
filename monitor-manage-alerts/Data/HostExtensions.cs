@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
+namespace MdeSamples.Data;
+
 public static class HostExtensions
 {
     public static void AddDbContext(this IServiceCollection services, HostBuilderContext context)

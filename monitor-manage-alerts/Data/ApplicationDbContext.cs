@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using MdeSamples.Models;
 
-public class ApplicationDbContext(): DbContext
+namespace MdeSamples.Data;
+
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): DbContext(options)
 {
     public DbSet<Alert> Alerts { get; set; }
 

@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-monitor_manage_alerts-59e10b7c-05a2-43e5-b737-fae46b4fabe4</UserSecretsId>
-    <RootNamespace>monitor_manage_alerts</RootNamespace>
+    <RootNamespace>MdeSamples</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
