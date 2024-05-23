@@ -15,6 +15,8 @@ public record UpdateAlertTask
     /// </summary>
     public Alert Subject { get; init; } = new();
 
+    public int SubjectId { get; init; }
+    
     /// <summary>
     /// What sort of change do we want to make in the system?
     /// </summary>

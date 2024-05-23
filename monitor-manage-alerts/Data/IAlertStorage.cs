@@ -13,4 +13,8 @@ public interface IAlertStorage
     /// <param name="alerts"></param>
     /// <returns>Number of alerts added (which were not already in storage)</returns>
     Task<int> AddRangeAsync(IEnumerable<Alert> alerts);
+
+    Task<IEnumerable<UpdateAlertTask>> GetUpdatesAsync();
+
+    Task MarkAsSentAsync(UpdateAlertTask update);
 }
