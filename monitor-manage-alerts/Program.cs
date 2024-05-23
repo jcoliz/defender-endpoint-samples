@@ -17,6 +17,7 @@ var host = Host
         );
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddDbContext(context);
+        services.AddSingleton<IAlertStorage,AlertStorage>();
     })
     .Build();
 

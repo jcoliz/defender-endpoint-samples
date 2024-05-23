@@ -8,7 +8,7 @@ public static class HostExtensions
     {
         var connectionString =
             context.Configuration.GetConnectionString("DefaultConnection");
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContextFactory<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
     }
 
