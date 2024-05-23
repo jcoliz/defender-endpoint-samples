@@ -3,8 +3,19 @@ using MdeSamples.Models;
 
 namespace MdeSamples.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): DbContext(options)
+public class ApplicationDbContext: DbContext
 {
+    public ApplicationDbContext()
+    {
+
+    }
+
+    public ApplicationDbContext(DbContextOptions options)
+        : base(options)
+    {
+        
+    }
+
     public DbSet<Alert> Alerts { get; set; }
 
     public DbSet<UpdateAlertTask> UpdateAlertTasks { get; set; }

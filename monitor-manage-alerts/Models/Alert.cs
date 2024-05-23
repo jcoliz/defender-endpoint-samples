@@ -1,5 +1,7 @@
 using AutoMapper;
 
+namespace MdeSamples.Models;
+
 /// <summary>
 /// Our local copy of an alert
 /// </summary>
