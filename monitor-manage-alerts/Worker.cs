@@ -4,10 +4,11 @@ using AutoMapper;
 using MdeSamples.Data;
 using MdeSamples.Models;
 using Microsoft.Graph;
+using Microsoft.Graph.Models.Security;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Serialization;
 using Microsoft.Kiota.Abstractions.Store;
-using Microsoft.Kiota.Http.HttpClientLibrary;
+using Alert = MdeSamples.Models.Alert;
 
 namespace MdeSamples;
 
@@ -94,50 +95,34 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
 
             if (update.Action == UpdateAction.Comment)
             {
-#if true
-                // See https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2514
-                logger.LogWarning("Adding comments is not working in SDK right now.");
-#else
                 var posted = await SetComment(update.Subject.AlertId, update.Payload);
 
                 if (posted is null)
                 {
-                    logger.LogWarning("Post alert comment request failed");
+                    throw new ApplicationException("Set ommentfailed");
                 }
-                else
-                {
-                    logger.LogInformation("Posted comment OK {comments}",JsonSerializer.Serialize(posted, _jsonoptions));
 
-                    await alertStorage.MarkAsSentAsync(update);
-                }
-            }
-            else if (update.Action == UpdateAction.AssignedTo)
-            {
-#endif
-                /*
-                Microsoft.Graph.Models.Security.AlertComment comment = new() {
-                    OdataType = "microsoft.graph.security.alertComment", 
-                    Comment = commentText
-                };
-                List<Microsoft.Graph.Models.Security.AlertComment> body = [ comment ];
-                */
-
-                Microsoft.Graph.Models.Security.Alert body = new() { AssignedTo = update.Payload };
-                var posted = await graphClient.Security.Alerts_v2[update.Subject.AlertId].PatchAsync(body);
-
-                // This returns a whole alert with updated values
-                var newAlert = mapper.Map<Alert>(posted);
-                await alertStorage.AddOrUpdateAlertAsync(newAlert);
-
-                logger.LogInformation("Posted asssigned to OK {value}",JsonSerializer.Serialize(newAlert, _jsonoptions));
+                logger.LogInformation("Posted comment OK {comments}",JsonSerializer.Serialize(posted, _jsonoptions));
 
                 await alertStorage.MarkAsSentAsync(update);
             }
             else
             {
-                logger.LogWarning("Update actions of type {action} are not supported", update.Action.ToString());
-            }
+                var posted = await PatchUpdate(update);
 
+                if (posted is null)
+                {
+                    throw new ApplicationException("Patch update failed");
+                }
+
+                // This returns a whole alert with updated values
+                var newAlert = mapper.Map<Alert>(posted);
+                await alertStorage.AddOrUpdateAlertAsync(newAlert);
+
+                logger.LogInformation("Posted update OK {result}",JsonSerializer.Serialize(newAlert, _jsonoptions));
+
+                await alertStorage.MarkAsSentAsync(update);
+            }
         }
         catch (Exception ex)
         {
@@ -149,6 +134,10 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
     {
         // Currently fails
         // See https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2514
+#if true
+        logger.LogWarning("Adding comments is not working in SDK right now.");
+        return Task.FromResult<List<Microsoft.Graph.Models.Security.AlertComment>?>(null);
+#else
 
         Microsoft.Graph.Models.Security.AlertComment comment = new() {
              OdataType = "microsoft.graph.security.alertComment", 
@@ -157,47 +146,21 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
         List<Microsoft.Graph.Models.Security.AlertComment> body = [ comment ];
 
         return graphClient.Security.Alerts_v2[alertId].Comments.PostAsync(body);
-    }
-}
-
-public class X : IRequestAdapter
-{
-    public ISerializationWriterFactory SerializationWriterFactory => throw new NotImplementedException();
-
-    public string? BaseUrl { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-    public Task<T?> ConvertToNativeRequestAsync<T>(RequestInformation requestInfo, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
+#endif
     }
 
-    public void EnableBackingStore(IBackingStoreFactory backingStoreFactory)
+    protected Task<Microsoft.Graph.Models.Security.Alert?> PatchUpdate(UpdateAlertTask update)
     {
-        throw new NotImplementedException();
-    }
+        Microsoft.Graph.Models.Security.Alert body = update.Action switch {
+            UpdateAction.AssignedTo => new() { AssignedTo = update.Payload },
+            UpdateAction.Classification => new() { Classification = Enum.Parse<AlertClassification>(update.Payload) },
+            UpdateAction.Determination => new() { Determination = Enum.Parse<AlertDetermination>(update.Payload) },
+            UpdateAction.Status => new() { Status = Enum.Parse<AlertStatus>(update.Payload) },
+            _ => throw new NotImplementedException()
+        };
 
-    public Task<ModelType?> SendAsync<ModelType>(RequestInformation requestInfo, ParsableFactory<ModelType> factory, Dictionary<string, ParsableFactory<IParsable>>? errorMapping = null, CancellationToken cancellationToken = default) where ModelType : IParsable
-    {
-        throw new NotImplementedException();
-    }
+        logger.LogInformation("Posting alert update: {alert}", JsonSerializer.Serialize(body, _jsonoptions));
 
-    public Task<IEnumerable<ModelType>?> SendCollectionAsync<ModelType>(RequestInformation requestInfo, ParsableFactory<ModelType> factory, Dictionary<string, ParsableFactory<IParsable>>? errorMapping = null, CancellationToken cancellationToken = default) where ModelType : IParsable
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task SendNoContentAsync(RequestInformation requestInfo, Dictionary<string, ParsableFactory<IParsable>>? errorMapping = null, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ModelType?> SendPrimitiveAsync<ModelType>(RequestInformation requestInfo, Dictionary<string, ParsableFactory<IParsable>>? errorMapping = null, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<ModelType>?> SendPrimitiveCollectionAsync<ModelType>(RequestInformation requestInfo, Dictionary<string, ParsableFactory<IParsable>>? errorMapping = null, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
+        return graphClient.Security.Alerts_v2[update.Subject.AlertId].PatchAsync(body);
     }
 }

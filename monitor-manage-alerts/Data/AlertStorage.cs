@@ -33,14 +33,6 @@ public class AlertStorage(IDbContextFactory<ApplicationDbContext> dbContextFacto
 
                 result = ids.Count;
             }
-
-#if false
-            // Just for fun, let's make an alert comment
-            var alert = await dbContext.Set<Alert>().Where( x => x.Id == 2).SingleAsync();
-            var update  = new UpdateAlertTask() { Subject = alert, Payload = "New comment", Action = UpdateAction.Comment };
-            dbContext.Add(update);
-            await dbContext.SaveChangesAsync();
-#endif
         }
 
         return result;
