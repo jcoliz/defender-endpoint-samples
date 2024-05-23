@@ -45,6 +45,25 @@ public class AlertStorage(IDbContextFactory<ApplicationDbContext> dbContextFacto
 
         return result;
     }
+    public async Task AddOrUpdateAlertAsync(Alert newAlert)
+    {
+        using (ApplicationDbContext dbContext = dbContextFactory.CreateDbContext())
+        {
+            // Let's look for the alert first
+            var oldAlert = await dbContext.Set<Alert>().Where(x => x.AlertId == newAlert.AlertId).AsNoTracking().SingleOrDefaultAsync();
+
+            if (oldAlert == null)
+            {
+                dbContext.Add(newAlert);
+            }
+            else
+            {
+                dbContext.Update(newAlert with { Id = oldAlert.Id });
+            }
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
 
     /// <inheritdoc/>
     public async Task<IEnumerable<UpdateAlertTask>> GetUpdatesAsync()

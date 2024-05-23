@@ -86,6 +86,12 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
     {
         try
         {
+            if (string.IsNullOrEmpty(update.Subject.AlertId))
+            {
+                logger.LogWarning("Update {id} has no alert.", update.Id);
+                return;
+            }
+
             if (update.Action == UpdateAction.Comment)
             {
 #if true
@@ -104,7 +110,28 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
 
                     await alertStorage.MarkAsSentAsync(update);
                 }
+            }
+            else if (update.Action == UpdateAction.AssignedTo)
+            {
 #endif
+                /*
+                Microsoft.Graph.Models.Security.AlertComment comment = new() {
+                    OdataType = "microsoft.graph.security.alertComment", 
+                    Comment = commentText
+                };
+                List<Microsoft.Graph.Models.Security.AlertComment> body = [ comment ];
+                */
+
+                Microsoft.Graph.Models.Security.Alert body = new() { AssignedTo = update.Payload };
+                var posted = await graphClient.Security.Alerts_v2[update.Subject.AlertId].PatchAsync(body);
+
+                // This returns a whole alert with updated values
+                var newAlert = mapper.Map<Alert>(posted);
+                await alertStorage.AddOrUpdateAlertAsync(newAlert);
+
+                logger.LogInformation("Posted asssigned to OK {value}",JsonSerializer.Serialize(newAlert, _jsonoptions));
+
+                await alertStorage.MarkAsSentAsync(update);
             }
             else
             {
