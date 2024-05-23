@@ -8,7 +8,7 @@ using Microsoft.Graph;
 
 namespace monitor_manage_alerts;
 
-public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, IMapper mapper) : BackgroundService
+public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, IMapper mapper, IAlertStorage alertStorage) : BackgroundService
 {
     private GraphServiceClient? graphClient;
 
@@ -95,6 +95,8 @@ public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, I
 
                         // TODO: Consider moving graph calls INTO update feature
                     }
+
+                    await alertStorage.AddRangeAsync(alerts);
                 }
 
                 // TODO: Process update tasks here

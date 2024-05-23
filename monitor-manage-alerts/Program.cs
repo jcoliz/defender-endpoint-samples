@@ -15,7 +15,9 @@ var host = Host
             context.Configuration.GetSection(IdentityOptions.Section)
         );
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddDbContext(context);
     })
     .Build();
 
+host.PrepareDatabase();
 host.Run();
