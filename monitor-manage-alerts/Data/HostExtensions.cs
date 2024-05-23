@@ -2,8 +2,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MdeSamples.Data;
 
+/// <summary>
+/// Host builder extensions for handling the database
+/// </summary>
 public static class HostExtensions
 {
+    /// <summary>
+    /// Add the database context (factory, actually)
+    /// </summary>
+    /// <param name="services">Where to add</param>
+    /// <param name="context">Where to get configuration details</param>
     public static void AddDbContext(this IServiceCollection services, HostBuilderContext context)
     {
         var connectionString =
@@ -12,17 +20,16 @@ public static class HostExtensions
             options.UseNpgsql(connectionString));
     }
 
+    /// <summary>
+    /// Ensure the database is ready to go
+    /// </summary>
+    /// <param name="host">Host we are running on</param>
     public static void PrepareDatabase(this IHost host)
     {
+        // Migrate the database as needed every run
+        // Helpful for samples, but obviously we aren't doing this in production 
         var scope = host.Services.CreateScope();
-
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        // Postgres databases are always brought current by the application,
-        // because they are only ever used for development and testing.
-        //
-        // SqlServer databases must be created by EF Core tooling or SQL scripts!
-
         db.Database.Migrate();
     }
 }

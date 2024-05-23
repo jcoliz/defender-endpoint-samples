@@ -2,8 +2,13 @@ using MdeSamples.Data;
 using MdeSamples.Models;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// Stores alerts in database
+/// </summary>
+/// <param name="dbContextFactory">Where to get a dbcontext</param>
 public class AlertStorage(IDbContextFactory<ApplicationDbContext> dbContextFactory) : IAlertStorage
 {
+    /// <inheritdoc/>
     public async Task AddRangeAsync(IEnumerable<Alert> alerts)
     {
         using (ApplicationDbContext dbContext = dbContextFactory.CreateDbContext())
