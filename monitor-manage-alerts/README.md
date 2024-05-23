@@ -11,7 +11,7 @@ and initial configuration before running the sample.
 
 In particular, this sample requires these API permissions:
 
-* Microsoft Graph: SecurityAlert.Read.All
+* Microsoft Graph: SecurityAlert.ReadWrite.All
 
 ## Running locally
 
