@@ -50,7 +50,8 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
                     }
 
                     // Add them to storage
-                    await alertStorage.AddRangeAsync(alerts);
+                    var numAdded = await alertStorage.AddRangeAsync(alerts);
+                    logger.LogInformation("Added {count} alerts", numAdded);
                 }
 
                 // TODO: Process update tasks here

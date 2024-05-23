@@ -9,8 +9,10 @@ using Microsoft.EntityFrameworkCore;
 public class AlertStorage(IDbContextFactory<ApplicationDbContext> dbContextFactory) : IAlertStorage
 {
     /// <inheritdoc/>
-    public async Task AddRangeAsync(IEnumerable<Alert> alerts)
+    public async Task<int> AddRangeAsync(IEnumerable<Alert> alerts)
     {
+        var result = 0;
+
         using (ApplicationDbContext dbContext = dbContextFactory.CreateDbContext())
         {
             // Collect the alerts we already have, by Id
@@ -28,7 +30,11 @@ public class AlertStorage(IDbContextFactory<ApplicationDbContext> dbContextFacto
                 // Add them
                 dbContext.Set<Alert>().AddRange(adding);
                 await dbContext.SaveChangesAsync();
+
+                result = ids.Count;
             }
         }
+
+        return result;
     }
 }

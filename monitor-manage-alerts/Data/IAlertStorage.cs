@@ -11,6 +11,6 @@ public interface IAlertStorage
     /// Add the supplied alerts, only if don't already exist by AlertId
     /// </summary>
     /// <param name="alerts"></param>
-    /// <returns></returns>
-    Task AddRangeAsync(IEnumerable<Alert> alerts);
+    /// <returns>Number of alerts added (which were not already in storage)</returns>
+    Task<int> AddRangeAsync(IEnumerable<Alert> alerts);
 }
