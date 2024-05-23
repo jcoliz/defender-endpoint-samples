@@ -15,34 +15,66 @@ In particular, this sample requires these API permissions:
 
 ## Running locally
 
-Once you have `config.toml` set up, feel free to run the sample locally in this folder.
+While the sample is designed to run in a container, this is not required. It can be run locally
+for testing and development.
+
+In this situation, we will need a Postgres server available. To bring one up, you can start the
+`docker-compose-dbonly` compose project:
+
+```powershell
+docker compose -f .\.docker\docker-compose-dbonly.yaml up -d --wait
+```
+
+Once you have `config.toml` set up, and the database running, feel free to run the sample locally in this folder.
 
 ```powershell
 dotnet run
 
-info: monitor_manage_alerts.Worker[0]
+info: MdeSamples.Worker[0]
       Starting
-info: monitor_manage_alerts.Worker[0]
-      Client OK
 info: Microsoft.Hosting.Lifetime[0]
       Application started. Press Ctrl+C to shut down.
 info: Microsoft.Hosting.Lifetime[0]
       Hosting environment: Development
 info: Microsoft.Hosting.Lifetime[0]
-      Content root path: .\defender-endpoint-samples\monitor-manage-alerts
-info: monitor_manage_alerts.Worker[0]
+      Content root path: C:\Source\jcoliz\defender-endpoint-samples\monitor-manage-alerts
+info: MdeSamples.Worker[0]
       Received 2 alerts
+info: MdeSamples.Worker[0]
+      Alert: {
+        "AlertId": "ed638510306555978178_-1528645984",
+        "Category": "UnwantedSoftware",
+        "Severity": "informational",
+        "CreatedDateTime": "2024-05-11T13:24:15.71+00:00",
+        "Comments": [],
+        "Title": "TEST: CustomDetectionRule.exe detected",
+        "Status": "new"
+      }
+info: MdeSamples.Worker[0]
+      Added 2 alerts
 info: Microsoft.Hosting.Lifetime[0]
       Application is shutting down...
-info: monitor_manage_alerts.Worker[0]
+info: MdeSamples.Worker[0]
       Cancelled
 ```
 
-Right now, the sample connects to the Graph Security APIs, and fetches all the alerts
-every 30 seconds.
+Right now, the sample connects to the Graph Security APIs, fetches all the alerts
+every 30 seconds, and adds the new ones into the database.
+
+Now, we can inspect the database, perhaps using the [PostreSQL Extension](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres) for VSCode, to
+see that the alerts have been added.
+
+![Alerts in DB](../docs/images/monitor-alerts-postgres.png)
+
+When you're done, you can stop the compose project:
+
+```powershell
+docker compose -f .\.docker\docker-compose-dbonly.yaml down
+```
 
 ## Building the container
 
+Once you're happy with it running locally, you can build it into a container and run it there.
 From a terminal window in this folder:
 
 ```powershell
@@ -59,16 +91,26 @@ docker compose -f .docker/docker-compose.yaml up
 [+] Running 1/0
  ✔ Container monitor  Recreated                                                                                    0.1s
 Attaching to monitor
-monitor  | info: monitor_manage_alerts.Worker[0]
-monitor  |       Starting
-monitor  | info: monitor_manage_alerts.Worker[0]
-monitor  |       Client OK
-monitor  | info: Microsoft.Hosting.Lifetime[0]
-monitor  |       Application started. Press Ctrl+C to shut down.
-monitor  | info: Microsoft.Hosting.Lifetime[0]
-monitor  |       Hosting environment: Production
-monitor  | info: Microsoft.Hosting.Lifetime[0]
-monitor  |       Content root path: /app
-monitor  | info: monitor_manage_alerts.Worker[0]
-monitor  |       Received 2 alerts
+monitor     | info: MdeSamples.Worker[0]
+monitor     |       Starting
+monitor     | info: Microsoft.Hosting.Lifetime[0]
+monitor     |       Application started. Press Ctrl+C to shut down.
+monitor     | info: Microsoft.Hosting.Lifetime[0]
+monitor     |       Hosting environment: Production
+monitor     | info: Microsoft.Hosting.Lifetime[0]
+monitor     |       Content root path: /app
+monitor     | info: MdeSamples.Worker[0]
+monitor     |       Received 2 alerts
+monitor     | info: MdeSamples.Worker[0]
+monitor     |       Alert: {
+monitor     |         "AlertId": "ed638510306555978178_-1528645984",
+monitor     |         "Category": "UnwantedSoftware",
+monitor     |         "Severity": "informational",
+monitor     |         "CreatedDateTime": "2024-05-11T13:24:15.71+00:00",
+monitor     |         "Comments": [],
+monitor     |         "Title": "TEST: CustomDetectionRule.exe detected",
+monitor     |         "Status": "new"
+monitor     |       }
+monitor     | info: MdeSamples.Worker[0]
+monitor     |       Added 2 alerts
 ```
