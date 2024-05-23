@@ -88,6 +88,10 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
         {
             if (update.Action == UpdateAction.Comment)
             {
+#if true
+                // See https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2514
+                logger.LogWarning("Adding comments is not working in SDK right now.");
+#else
                 var posted = await SetComment(update.Subject.AlertId, update.Payload);
 
                 if (posted is null)
@@ -100,6 +104,7 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
 
                     await alertStorage.MarkAsSentAsync(update);
                 }
+#endif
             }
             else
             {
