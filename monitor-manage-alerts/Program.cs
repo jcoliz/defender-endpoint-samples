@@ -1,7 +1,9 @@
 using System.Reflection;
 using MdeSamples;
 using MdeSamples.Data;
+using MdeSamples.Graph;
 using MdeSamples.Options;
+using Microsoft.Graph;
 
 var host = Host
     .CreateDefaultBuilder(args)
@@ -18,6 +20,7 @@ var host = Host
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddDbContext(context);
         services.AddSingleton<IAlertStorage,AlertStorage>();
+        services.AddGraphClient();
     })
     .Build();
 

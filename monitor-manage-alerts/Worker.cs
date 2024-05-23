@@ -10,10 +10,8 @@ using Microsoft.Graph;
 
 namespace MdeSamples;
 
-public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, IMapper mapper, IAlertStorage alertStorage) : BackgroundService
+public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMapper mapper, IAlertStorage alertStorage) : BackgroundService
 {
-    private GraphServiceClient? graphClient;
-
     private readonly JsonSerializerOptions _jsonoptions = new() 
     { 
         WriteIndented = true, 
@@ -21,52 +19,10 @@ public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, I
     };
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
+    {        
         try
         {
             logger.LogInformation("Starting");
-
-            //
-            // Setup authentication for Microsoft Graph Service
-            //
-
-            if (options.Value is null)
-            {
-                throw new ApplicationException("Please set Identity options in configuration");
-            }
-
-            ClientSecretCredential clientSecretCredential =
-                new ClientSecretCredential
-                (
-                    options.Value.TenantId.ToString(), 
-                    options.Value.AppId.ToString(),
-                    options.Value.AppSecret
-                ); 
-
-            graphClient = new GraphServiceClient(clientSecretCredential, options.Value.Scopes);
-
-            logger.LogInformation("Client OK");
-
-            await InnerLoop(stoppingToken);
-        }
-        catch (TaskCanceledException)
-        {
-            logger.LogInformation("Cancelled");
-        }
-        catch (Exception ex)
-        {
-            logger.LogCritical(ex,"Failed");
-        }
-    }
-
-    private async Task InnerLoop(CancellationToken stoppingToken)
-    {
-        try
-        {
-            if (graphClient is null)
-            {
-                throw new ApplicationException("Client was not initialized");
-            }
 
             //
             // Continually fetch alerts
@@ -91,13 +47,9 @@ public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, I
                     foreach(var alert in alerts)
                     {
                         logger.LogInformation("Alert: {alert}", JsonSerializer.Serialize(alert, _jsonoptions));
-
-                        // TODO: Insert alerts into database here
-                        // AlertFeature.InsertIfNotExists(alert)
-
-                        // TODO: Consider moving graph calls INTO update feature
                     }
 
+                    // Add them to storage
                     await alertStorage.AddRangeAsync(alerts);
                 }
 
@@ -111,15 +63,11 @@ public class Worker(ILogger<Worker> logger, IOptions<IdentityOptions> options, I
         }
         catch (TaskCanceledException)
         {
-            throw;
-        }
-        catch (ApplicationException)
-        {
-            throw;
+            logger.LogInformation("Cancelled");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error: {messager}", ex.Message);
+            logger.LogCritical(ex,"Failed");
         }
     }
 }
