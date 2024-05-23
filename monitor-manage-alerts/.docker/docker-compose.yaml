@@ -1,7 +1,27 @@
+name: mde_monitor
 services:
   monitor:
     image: monitor-manage-alerts:local
     container_name: monitor
     restart: always
+    environment:
+      - CONNECTIONSTRINGS__DEFAULTCONNECTION=Host=monitor_db;Database=monitor;Username=postgres;Password=development
     volumes:
       - ../config.toml:/app/config.toml
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:15.4-alpine
+    container_name: monitor_db
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=development
+      - POSTGRES_DB=monitor
+      - POSTGRES_USER=postgres
+      - PGUSER=postgres
+    healthcheck:
+      test: [ "CMD-SHELL" , "pg_isready" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10

@@ -1,8 +1,8 @@
-name: monitor_dbonly
+name: mde_monitor_dbonly
 services: 
   db:
     image: postgres:15.4-alpine
-    container_name: monitor_db
+    container_name: monitor_dbonly
     restart: always
     ports:
       - '5432:5432'
