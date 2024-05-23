@@ -1,15 +1,19 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AutoMapper;
-using Azure.Identity;
 using MdeSamples.Data;
 using MdeSamples.Models;
-using MdeSamples.Options;
-using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 
 namespace MdeSamples;
 
+/// <summary>
+/// Perform repeated work
+/// </summary>
+/// <param name="logger">Where to send logs</param>
+/// <param name="graphClient">How to contact Graph service</param>
+/// <param name="mapper">How to map objects</param>
+/// <param name="alertStorage">Where to store alerts</param>
 public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMapper mapper, IAlertStorage alertStorage) : BackgroundService
 {
     private readonly JsonSerializerOptions _jsonoptions = new() 
@@ -18,6 +22,7 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault 
     };
 
+    ///<inheritdoc/>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {        
         try
@@ -43,7 +48,7 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
                     // Map the alerts into local models
                     var alerts = mapper.Map<List<Alert>>(result.Value);
 
-                    // And dump them, for testing
+                    // Dump them, for testing
                     foreach(var alert in alerts)
                     {
                         logger.LogInformation("Alert: {alert}", JsonSerializer.Serialize(alert, _jsonoptions));
@@ -56,8 +61,8 @@ public class Worker(ILogger<Worker> logger, GraphServiceClient graphClient, IMap
 
                 // TODO: Process update tasks here
                 // var updates = UpdateFeature.NewUpdates();
-                // AlertFeature.SendUpdate(update)
-                // UpdateFeature.MarkAsSet(update)
+                // ... Do the update here ...
+                // UpdateFeature.MarkAsSent(update)
 
                 await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
