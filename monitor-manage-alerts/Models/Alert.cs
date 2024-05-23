@@ -21,15 +21,14 @@ public record Alert
     /// </summary>
     public string AlertId { get; init; } = string.Empty;
     public string? Category { get; init; }
-    public string? AlertDetermination { get; init; }
     public string Severity { get; init; } = string.Empty;
     public DateTimeOffset? CreatedDateTime { get; init; }
     public List<AlertComment> Comments { get; init; } = [];
     public string Title { get; init; } = string.Empty;
     public string Status { get; init; } = string.Empty;
-    public string Classification { get; init; } = string.Empty;
+    public string? Classification { get; init; }
     public string? AssignedTo { get; init; }
-    public string Determination { get; init; } = string.Empty;
+    public string? Determination { get; init; }
 }
 
 /// <summary>
