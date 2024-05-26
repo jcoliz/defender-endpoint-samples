@@ -48,7 +48,7 @@ public class Worker(ILogger<Worker> logger, IOptions<EventHubOptions> ehubOption
                 using var jDoc = JsonDocument.Parse(raw);
         
                 // TODO: Consider structured logging for this
-                logger.LogInformation("Events: {events}", JsonSerializer.Serialize(jDoc, _jsonoptions));
+                logger.LogInformation("Time: {time} Events: {events}", DateTime.UtcNow.ToUniversalTime(), JsonSerializer.Serialize(jDoc, _jsonoptions));
             }
 
         }
