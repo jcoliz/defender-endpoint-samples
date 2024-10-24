@@ -14,4 +14,4 @@ AppSecret = "--fill me in--" # Client secret value
 UserId = "--fill me in--" # Existing user to fetch, for testing
 
 [App.Login]
-Scopes = [ "https://api.securitycenter.microsoft.com/.default" ]
+Scopes = [ "https://graph.microsoft.com/.default" ]
