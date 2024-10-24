@@ -52,13 +52,13 @@ try
     // Make a test call to retrieve one user's details
     //
 
-    var user = await graphClient.Users[options.Identity.UserId].GetAsync();
+    var users = await graphClient.Users.GetAsync();
 
     //
     // Dump the result
     //
 
-    Console.WriteLine("USER: {0}", JsonSerializer.Serialize(user!, jsonoptions));
+    Console.WriteLine("USER: {0}", JsonSerializer.Serialize(users, jsonoptions));
 
     //
     // Make a hunting query
