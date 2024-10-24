@@ -8,7 +8,7 @@ The difference from the Hello World sample is that we will be using the Microsof
 
 This means we'll need to give our app the correct permissions. For the purpose of this sample, we'll want to ensure our application has the following permissions:
 
-* User.ReadBasic.All
+* User.Read.All
 * ThreatHunting.Read.All
 
 ## SDK
