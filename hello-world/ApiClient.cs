@@ -44,6 +44,12 @@ public class ApiClient(Uri baseUri, string token)
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await client.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(response.ReasonPhrase);
+        }
+
         var content = await response.Content.ReadAsStringAsync();
 
         return content;
