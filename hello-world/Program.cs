@@ -6,6 +6,7 @@ using Microsoft.Identity.Client;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using HellowWorld;
+using Azure.Identity;
 
 try
 {
@@ -31,27 +32,28 @@ try
     // Get a token
     //
 
-    var myApp = ConfidentialClientApplicationBuilder
-        .Create(options.Identity!.AppId.ToString())
-        .WithClientSecret(options.Identity!.AppSecret!)
-        .WithAuthority($"{options.Login!.Authority!}{options.Identity.TenantId}")
-        .Build();
+    ClientSecretCredential clientSecretCredential =
+        new ClientSecretCredential
+        (
+            options.Identity!.TenantId.ToString(), 
+            options.Identity.AppId.ToString(),
+            options.Identity.AppSecret
+        ); 
 
-    var authResult = await myApp.AcquireTokenForClient(options.Login!.Scopes).ExecuteAsync();
-
-    var jwtToken = new JwtSecurityToken(authResult.AccessToken);
+    var token = await clientSecretCredential.GetTokenAsync(new(options.Login!.Scopes.ToArray()));
+    var jwtTokenAzure = new JwtSecurityToken(token.Token);
 
     //
     // Dump the token for viewing
     //
 
-    Console.WriteLine("TOKEN: {0}", JsonSerializer.Serialize(jwtToken.Payload, jsonoptions));
+    Console.WriteLine("TOKEN: {0}", JsonSerializer.Serialize(jwtTokenAzure.Payload, jsonoptions));
 
     //
     // Retrieve recently-reported machines
     //
 
-    var client = new ApiClient(options.Resources!.BaseUri!, jwtToken.RawData);
+    var client = new ApiClient(options.Resources!.BaseUri!, jwtTokenAzure.RawData);
     var machines = await client.GetRecentMachinesAsync();
 
     //
