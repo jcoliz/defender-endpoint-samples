@@ -4,69 +4,27 @@
 namespace HelloWorld.Options;
 
 /// <summary>
-/// Configuration options for app-wide behavior
+/// Options describing the identity of the app
 /// </summary>
-public record AppOptions
+public class IdentityOptions
 {
     /// <summary>
     /// Config file section
     /// </summary>
-    public static readonly string Section = "App";
+    public static readonly string Section = "Identity";
 
     /// <summary>
-    /// Options describing the identity of the app
+    /// Directory (tenant) ID
     /// </summary>
-    public class IdentityOptions
-    {
-        /// <summary>
-        /// Directory (tenant) ID
-        /// </summary>
-        public Guid TenantId { get; init; }
-
-        /// <summary>
-        /// Application (client) ID
-        /// </summary>
-        public Guid AppId { get; init; }
-
-        /// <summary>
-        /// Client secret value
-        /// </summary>
-        public string? AppSecret { get; init; }
-
-        /// <summary>
-        /// User ID of a sample user to get to validate connection
-        /// </summary>
-        public string? UserId { get; init; }
-    }
+    public Guid TenantId { get; init; }
 
     /// <summary>
-    /// Options for logging into the system
+    /// Application (client) ID
     /// </summary>
-    public class LoginOptions
-    {
-        /// <summary>
-        /// Authority providing the login service
-        /// </summary>
-        public Uri? Authority { get; init; }
-
-        /// <summary>
-        /// API scopes to request at login
-        /// </summary>
-        public ICollection<string> Scopes { get; init; } = [];
-    }
+    public Guid AppId { get; init; }
 
     /// <summary>
-    /// Options for connecting with the resource server
+    /// Client secret value
     /// </summary>
-    public class ResourceOptions
-    {
-        /// <summary>
-        /// Base URI for all resource requests
-        /// </summary>
-        public Uri? BaseUri { get; init; }
-    }
-
-    public IdentityOptions? Identity { get; init; }
-    public LoginOptions? Login { get; init; }
-    public ResourceOptions? Resources { get; init; }
+    public string? AppSecret { get; init; }
 }

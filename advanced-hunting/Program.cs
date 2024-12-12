@@ -1,13 +1,12 @@
 ﻿// Copyright (C) 2024 James Coliz, Jr. <jcoliz@outlook.com> All rights reserved
 // Use of this source code is governed by the MIT license (see LICENSE.md)
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Azure.Identity;
 using HelloWorld.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
-using Microsoft.Graph.Security.MicrosoftGraphSecurityRunHuntingQuery;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 try
 {
@@ -19,8 +18,14 @@ try
         .AddTomlFile("config.toml", optional: false, reloadOnChange: true)
         .Build();
 
-    AppOptions options = new();
-    configuration.Bind(AppOptions.Section, options);
+    IdentityOptions options = new();
+    configuration.Bind(IdentityOptions.Section, options);
+
+    if (options is null)
+    {
+        Console.Error.WriteLine("ERROR: Unable to load identity options");
+        return;
+    }
 
     //
     // Dump the configuration to make sure it's working
@@ -41,43 +46,28 @@ try
     ClientSecretCredential clientSecretCredential =
         new ClientSecretCredential
         (
-            options.Identity!.TenantId.ToString(), 
-            options.Identity.AppId.ToString(),
-            options.Identity.AppSecret
+            options.TenantId.ToString(), 
+            options.AppId.ToString(),
+            options.AppSecret
         ); 
 
-    GraphServiceClient graphClient = new GraphServiceClient(clientSecretCredential, options.Login!.Scopes);
-
-    //
-    // Make a test call to retrieve one user's details
-    //
-
-    var user = await graphClient.Users[options.Identity.UserId].GetAsync();
-
-    //
-    // Dump the result
-    //
-
-    Console.WriteLine("USER: {0}", JsonSerializer.Serialize(user!, jsonoptions));
+    GraphServiceClient graphClient = new GraphServiceClient(clientSecretCredential);
 
     //
     // Make a hunting query
     //
 
-    var body = new RunHuntingQueryPostRequestBody() 
-    { 
+    var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(new() {
         Query = "DeviceInfo | order by Timestamp desc | project Timestamp, DeviceId, ReportId, ExposureLevel | limit 5" 
-    };
-    var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(body);
+    });
 
     //
     // Dump the result
     //
 
     Console.WriteLine("HUNTING: {0}", JsonSerializer.Serialize(result!, jsonoptions));
-
 }
 catch (Exception ex)
 {
-    Console.WriteLine("ERROR: {0} {1}", ex.GetType().Name, ex.Message);
+    Console.Error.WriteLine("ERROR: {0} {1}", ex.GetType().Name, ex.Message);
 }
