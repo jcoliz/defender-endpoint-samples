@@ -40,20 +40,20 @@ try
             options.Identity.AppSecret
         ); 
 
-    var token = await clientSecretCredential.GetTokenAsync(new(options.Login!.Scopes.ToArray()));
-    var jwtTokenAzure = new JwtSecurityToken(token.Token);
+    var accessToken = await clientSecretCredential.GetTokenAsync(new(options.Login!.Scopes.ToArray()));
+    var jwtToken = new JwtSecurityToken(accessToken.Token);
 
     //
     // Dump the token for viewing
     //
 
-    Console.WriteLine("TOKEN: {0}", JsonSerializer.Serialize(jwtTokenAzure.Payload, jsonoptions));
+    Console.WriteLine("TOKEN: {0}", JsonSerializer.Serialize(jwtToken.Payload, jsonoptions));
 
     //
     // Retrieve recently-reported machines
     //
 
-    var client = new ApiClient(options.Resources!.BaseUri!, jwtTokenAzure.RawData);
+    var client = new ApiClient(options.Resources!.BaseUri!, jwtToken.RawData);
     var machines = await client.GetRecentMachinesAsync();
 
     //
@@ -64,22 +64,6 @@ try
     {
         Console.WriteLine("MACHINES: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
     }
-
-    //
-    // Retrieve top recommendations by severity
-    //
-
-    var recommendations = await client.GetRecommendationsAsync();
-
-    //
-    // Dump the response for viewing
-    //
-
-    using (var jDoc = JsonDocument.Parse(recommendations))
-    {
-        Console.WriteLine("RECOMMENDATIONS: {0}", JsonSerializer.Serialize(jDoc, jsonoptions));
-    }
-
 }
 catch (Exception ex)
 {

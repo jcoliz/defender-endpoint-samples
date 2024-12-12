@@ -12,7 +12,7 @@ namespace HellowWorld;
 /// <param name="token">Auth token (JWT) from login</param>
 public class ApiClient(Uri baseUri, string token)
 {
-    private HttpClient client = new();
+    private readonly HttpClient client = new();
 
     /// <summary>
     /// Retrieve most recently-reported machines
@@ -20,16 +20,7 @@ public class ApiClient(Uri baseUri, string token)
     /// <returns>List of machines in JSON</returns>
     public Task<string> GetRecentMachinesAsync()
     {
-        return GetAsync("machines?$top=10&$orderby=lastSeen desc");
-    }
-
-    /// <summary>
-    /// Retreive top known vulnerabilities across all machines
-    /// </summary>
-    /// <returns></returns>
-    public Task<string> GetRecommendationsAsync()
-    {
-        return GetAsync("recommendations?$top=10&$orderby=severityScore desc");
+        return GetAsync("machines?$top=5&$orderby=lastSeen desc");
     }
 
     /// <summary>
@@ -41,7 +32,8 @@ public class ApiClient(Uri baseUri, string token)
     {
         var uri = $"{baseUri}{pathAndQuery}";
         var request = new HttpRequestMessage(HttpMethod.Get, uri);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        request.Headers.Authorization = new("Bearer", token);
+        request.Headers.UserAgent.Add( new("defender-endpoint-samples","0.0.0") );
 
         var response = await client.SendAsync(request);
 

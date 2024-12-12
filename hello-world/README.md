@@ -1,9 +1,6 @@
 # Hello World
 
-This sample connects to the Defender for Endpoint APIs, then makes a couple basic requests
-
-* Gets recently reported machines
-* Gets most critical security recommendations
+This sample connects to the Defender for Endpoint APIs, then makes a simple request to gets recently-reported machines.
 
 ## Getting Started
 
@@ -11,7 +8,6 @@ Step one is to ensure you have an Entra ID app registration, and the necessary d
 
 Ensure your app registration has permission to the following `WindowsDefenderATP` APIs:
 
-* `SecurityRecommendation.Read.All`
 * `Machine.Read.All`
 
 ## Running the Sample
@@ -66,7 +62,6 @@ As returned from `login.microsoftonline.com`. In particular, confirm that the `r
   "oid": "00000000-0000-0000-0000-000000000000",
   "rh": "0.AQcAFgzpbcuwWUeGs1YBrsSbUGUEePwXINRAoMUwcCJHG5L_AAA.",
   "roles": [
-    "SecurityRecommendation.Read.All",
     "Machine.Read.All"
   ],
   "sub": "00000000-0000-0000-0000-000000000000",
@@ -103,29 +98,9 @@ As returned from [List machines API](https://learn.microsoft.com/en-us/defender-
 }
 ```
 
-### Security recommendations
+## What's next?
 
-As returned from [List all recommendations](https://learn.microsoft.com/en-us/defender-endpoint/api/get-all-vulnerabilities)
-
-```json
-{
-  "@odata.context": "https://api.securitycenter.microsoft.com/api/$metadata#Recommendations",
-  "@odata.count": 10,
-  "value": [
-    {
-      "id": "sca-_-scid-2500",
-      "productName": "windows_11",
-      "recommendationName": "Block executable content from email client and webmail",
-      "weaknesses": 1,
-      "vendor": "microsoft",
-      "recommendedVersion": "",
-      "recommendedVendor": "",
-      "recommendedProgram": "",
-      "recommendationCategory": "Security controls",
-      "subCategory": "Attack Surface Reduction",
-      "severityScore": 9.0,
-      "publicExploit": false
-    }
-  ]
-}
-```
+Congratulations, you've now successfully connected to the Microsoft Defender for Endppoint service.
+Now you're ready to call any of the [Supported Microsoft Defender for Endpoint APIs](https://learn.microsoft.com/en-us/defender-endpoint/api/exposed-apis-list).
+Of course, you may need to grant additional permissions to your Entra ID app registration.
+The required permission is described on the documentation page for each API.
