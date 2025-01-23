@@ -4,7 +4,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Azure.Identity;
-using HelloWorld.Options;
+using MdEndpoint.Models;
+using MdEndpoint.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
 
@@ -57,15 +58,20 @@ try
     // Make a hunting query
     //
 
-    var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(new() {
-        Query = "DeviceInfo | order by Timestamp desc | project Timestamp, DeviceId, ReportId, ExposureLevel | limit 5" 
-    });
+    var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(
+        new()
+        {
+            Query = "DeviceEvents | order by Timestamp desc | project Timestamp, DeviceId, DeviceName, ActionType, ReportId | limit 5",
+        }
+    );
+
+    var events = result!.Results!.Select(x=>x.AdditionalData).Select(DeviceEvent.FromDictionary);
 
     //
     // Dump the result
     //
 
-    Console.WriteLine("HUNTING: {0}", JsonSerializer.Serialize(result!, jsonoptions));
+    Console.WriteLine("DEVICE EVENTS: {0}", JsonSerializer.Serialize(events, jsonoptions));
 }
 catch (Exception ex)
 {
