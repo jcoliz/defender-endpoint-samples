@@ -54,24 +54,76 @@ try
 
     GraphServiceClient graphClient = new GraphServiceClient(clientSecretCredential);
 
-    //
-    // Make a hunting query
-    //
+    // Define a sliding window of time
+    var endTime = DateTime.UtcNow;
+    var startTime = endTime - TimeSpan.FromMinutes(10);
 
-    var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(
-        new()
+    // All the events we've received in this session
+    var eventsReceived = new HashSet<DeviceEvent>();
+
+    // All the events we've received since we've moved the window forward
+    var eventsReceivedThisWindow = new HashSet<DeviceEvent>();
+
+    while(true)
+    {
+        //
+        // Request events in the window we're looking for
+        //
+
+        var timespan = $"{startTime:o}/{endTime:o}";
+        Console.WriteLine($"Timespan: {timespan}");
+        var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(
+            new()
+            {
+                Query = $"DeviceEvents | order by Timestamp asc | project Timestamp, DeviceId, DeviceName, ActionType, ReportId | limit 10",
+                Timespan = timespan
+            }
+        );
+        //| where Timestamp between (datetime({startTime:o}) .. datetime({endTime:o}) ) 
+
+        // Transform to DeviceEvent objects    
+        var events = result!.Results!.Select(x=>x.AdditionalData).Select(DeviceEvent.FromDictionary).ToHashSet();
+
+        Console.WriteLine($"Received: {events.Count}");
+
+        //
+        // Remove events we already have received this window
+        //
+
+        events.ExceptWith(eventsReceivedThisWindow);
+
+        // If we received new events in this last request
+        if (events.Count > 0)
         {
-            Query = "DeviceEvents | order by Timestamp desc | project Timestamp, DeviceId, DeviceName, ActionType, ReportId | limit 5",
+            // Update the time window to the time of the last event, while leaving the end time unchanged 
+            startTime = events.OrderBy(x=>x.Timestamp).Last()!.Timestamp!.Value;
+
+            // Add them to events this session
+            eventsReceivedThisWindow.UnionWith(events);
+
+            // Now remove events we already received
+            events.ExceptWith(eventsReceived);
+
+            if (events.Count > 0)
+            {
+                // Dump the new events
+                Console.WriteLine("DEVICE EVENTS: {0}", JsonSerializer.Serialize(events, jsonoptions));
+
+                // Add them to known events
+                eventsReceived.UnionWith(events);
+            }
         }
-    );
-
-    var events = result!.Results!.Select(x=>x.AdditionalData).Select(DeviceEvent.FromDictionary);
-
-    //
-    // Dump the result
-    //
-
-    Console.WriteLine("DEVICE EVENTS: {0}", JsonSerializer.Serialize(events, jsonoptions));
+        else
+        {
+            // We have successfully received all events in the last desired window.
+            // Wait a bit, and then move the entire window forward
+            Console.WriteLine("WAIT");
+            await Task.Delay(TimeSpan.FromSeconds(15));
+            endTime = DateTime.UtcNow;
+            startTime = endTime - TimeSpan.FromMinutes(10);
+            eventsReceivedThisWindow = new HashSet<DeviceEvent>();
+        }
+    }
 }
 catch (Exception ex)
 {
