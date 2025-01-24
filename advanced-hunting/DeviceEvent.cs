@@ -9,6 +9,8 @@ public class DeviceEvent
     public string? DeviceName { get; init; }
     public string? ActionType { get; init; }
     public Int64 ReportId { get; init; }
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+    public TimeSpan Age => Timestamp.HasValue ? CreatedAt - Timestamp.Value : TimeSpan.Zero;
 
     public override bool Equals(object? obj) =>
         obj is DeviceEvent other
