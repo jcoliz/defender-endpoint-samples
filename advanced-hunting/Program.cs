@@ -68,7 +68,7 @@ try
         var result = await graphClient.Security.MicrosoftGraphSecurityRunHuntingQuery.PostAsync(
             new()
             {
-                Query = $"ExposureGraphNodes | where NodeLabel == \"user\"",
+                Query = $"IdentityInfo | where AssignedRoles contains \"Security Administrator\" | order by Timestamp desc | take 5",
                 Timespan = timespan
             }
         );
